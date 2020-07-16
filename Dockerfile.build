@@ -1,0 +1,11 @@
+FROM golang:1.13
+
+ARG COMMITSHA
+ARG COMMITTIME
+
+WORKDIR /src
+
+ENTRYPOINT cd /src \
+    && ls -lh \
+    && CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./app/kube-ctl-svc -ldflags "-X main._commitSha=${COMMITSHA} -X main._commitTime=${COMMITTIME}"
+

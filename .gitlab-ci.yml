@@ -1,0 +1,47 @@
+---
+image: registry.gitlab.com/flotechnologies/devops/docker-tools:master
+
+services:
+  - docker:18.09-dind
+
+variables:
+  CI_REGISTRY: registry.gitlab.com
+  CI_REGISTRY_IMAGE: "registry.gitlab.com/flotechnologies/gojumpstart"
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: "tcp://127.0.0.1:2375"
+  FLO_HTTP_PORT: 8080
+
+before_script:
+  - |
+    apk add --no-cache bash make git jq gettext
+    docker login \
+      --username "${CI_REGISTRY_USER}" \
+      --password "${CI_REGISTRY_PASSWORD}" \
+      "${CI_REGISTRY}"
+    export BASE_PATH=$(eval "pwd")
+    export COMMITTIME=$(git show -s --format=%ct $CI_COMMIT_SHA)
+
+stages:
+  - build
+  - push
+
+compile:
+  stage: build
+  except:
+    - tags
+  script:
+    - make build COMMITSHA="${CI_COMMIT_SHA}"
+  tags:
+    - build
+
+upload:
+  stage: push
+  dependencies:
+    - compile
+  only:
+    - master
+  script:
+    - make push DOCKER_TAG="${CI_PIPELINE_ID}"
+  tags:
+    - dev
+

@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  app:
+    image: kube-ctl-svc:local
+    environment:
+      APPLICATION_NAME: "kube-ctl-svc"
+      ENVIRONMENT: "development"
+    volumes:
+      - "./:/src"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.build
+      args:
+        CI_COMMIT_SHA: "${CI_COMMIT_SHA:-none}"
