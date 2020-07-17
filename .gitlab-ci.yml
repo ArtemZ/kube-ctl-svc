@@ -64,7 +64,7 @@ upload:
 upload-alpine:
   stage: push
   dependencies:
-    - compile
+    - compile-alpine
   only:
     - master
   script:
