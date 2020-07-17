@@ -61,3 +61,13 @@ upload:
   tags:
     - dev
 
+upload-alpine:
+  stage: push
+  dependencies:
+    - compile
+  only:
+    - master
+  script:
+    - make push-alpine DOCKER_TAG="${CI_PIPELINE_ID}"
+  tags:
+    - dev

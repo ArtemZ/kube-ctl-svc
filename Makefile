@@ -26,9 +26,6 @@ build-alpine: ## Build inside docker
 push:
 	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl https://nexus.flotech.co/repository/tools/kube-svc-ctl/kube-svc-ctl
 
-push:
-	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl https://nexus.flotech.co/repository/tools/kube-svc-ctl/kube-svc-ctl
-
 push-alpine:
 	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl-alpine https://nexus.flotech.co/repository/tools/kube-svc-ctl/alpine/kube-svc-ctl
 
