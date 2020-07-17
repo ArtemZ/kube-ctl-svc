@@ -32,6 +32,9 @@ compile:
     - tags
   script:
     - make build COMMITSHA="${CI_COMMIT_SHA}"
+  artifacts:
+    paths:
+      - app/kube-svc-ctl
   tags:
     - build
 
