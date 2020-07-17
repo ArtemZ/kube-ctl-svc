@@ -18,6 +18,17 @@ build: ## Build inside docker
 	$(COMPOSE) build app
 	$(COMPOSE) run app
 
+build: ## Build inside docker
+	mkdir -p app
+	$(COMPOSE) build app-alpine
+	$(COMPOSE) run app-alpine
+
 push:
 	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl https://nexus.flotech.co/repository/tools/kube-svc-ctl/kube-svc-ctl
+
+push:
+	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl https://nexus.flotech.co/repository/tools/kube-svc-ctl/kube-svc-ctl
+
+push-alpine:
+	curl -v -u $(NEXUS_USER):$(NEXUS_PASSWORD) --upload-file app/kube-svc-ctl-alpine https://nexus.flotech.co/repository/tools/kube-svc-ctl/alpine/kube-svc-ctl
 

@@ -13,3 +13,16 @@ services:
       dockerfile: ./Dockerfile.build
       args:
         CI_COMMIT_SHA: "${CI_COMMIT_SHA:-none}"
+
+  app-alpine:
+    image: kube-ctl-svc:local
+    environment:
+      APPLICATION_NAME: "kube-ctl-svc"
+      ENVIRONMENT: "development"
+    volumes:
+      - "./:/src"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.build.musl
+      args:
+        CI_COMMIT_SHA: "${CI_COMMIT_SHA:-none}"

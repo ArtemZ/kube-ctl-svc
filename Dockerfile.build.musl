@@ -1,0 +1,14 @@
+# Alpine is built using the MUSL C library.
+# You cannot run binaries that have been compiled for glibc in this environment.
+# You would need to build a go binary built explicitly for the Alpine platform
+FROM kloiadocker/kloiahelm:0.0.1
+
+ARG COMMITSHA
+ARG COMMITTIME
+RUN apk add go
+WORKDIR /src
+
+ENTRYPOINT cd /src \
+    && ls -lh \
+    && CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ./app/kube-svc-ctl-alpine -ldflags "-X main._commitSha=${COMMITSHA} -X main._commitTime=${COMMITTIME}"
+

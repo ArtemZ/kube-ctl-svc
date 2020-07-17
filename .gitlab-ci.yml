@@ -38,6 +38,18 @@ compile:
   tags:
     - build
 
+compile-alpine:
+  stage: build
+  except:
+    - tags
+  script:
+    - make build-alpine COMMITSHA="${CI_COMMIT_SHA}"
+  artifacts:
+    paths:
+      - app/kube-svc-ctl-alpine
+  tags:
+    - build
+
 upload:
   stage: push
   dependencies:
