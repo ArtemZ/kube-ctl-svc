@@ -1,8 +1,9 @@
 ---
-image: registry.gitlab.com/flotechnologies/devops/docker-tools:master
+image: kloiadocker/docker-compose:v1
 
 services:
-  - docker:18.09-dind
+  - name: docker:18.09-dind
+    command: ["--mtu=1300"]
 
 variables:
   CI_REGISTRY: registry.gitlab.com
