@@ -18,7 +18,7 @@ build: ## Build inside docker
 	$(COMPOSE) build app
 	$(COMPOSE) run app
 
-build: ## Build inside docker
+build-alpine: ## Build inside docker
 	mkdir -p app
 	$(COMPOSE) build app-alpine
 	$(COMPOSE) run app-alpine
