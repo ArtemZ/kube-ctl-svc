@@ -15,7 +15,7 @@ type DockerImageHelmConfig struct {
 }
 
 type SecretsHelmConfig struct {
-	Values map[string]interface{}
+	Datas map[string]interface{}
 }
 
 func (s *HelmConfig) ToYaml() string {
@@ -28,7 +28,7 @@ func (s *HelmConfig) ToYaml() string {
 
 func NewHelmConfig(dockerImageTag *string, secrets *map[string]interface{}) HelmConfig {
 	s := SecretsHelmConfig{
-		Values: *secrets,
+		Datas: *secrets,
 	}
 	i := DockerImageHelmConfig{
 		Tag: *dockerImageTag,
