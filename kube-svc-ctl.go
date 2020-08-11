@@ -26,7 +26,13 @@ func generateSvcConfig(name *string, tag *string, credentials *vault.VaultCreden
 
 func generateRegistrySecretManifest(credentials *vault.VaultCredentials) {
 	c := vault.NewVaultAuthenticatedClient(credentials)
-	r, err := vault.ReadVaultSecret(c, "secret/data/common/registry")
+	d, err := vault.ReadVaultSecret(c, "secret/data/common/registry")
+	var r map[string]interface{}
+	if subdata, ok := d["data"]; ok {
+		r = subdata.(map[string]interface{})
+	} else {
+		r = d
+	}
 	if err != nil {
 		panic(err)
 	}

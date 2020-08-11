@@ -4,7 +4,7 @@ import "log"
 import "gopkg.in/yaml.v2"
 
 type Secret struct {
-	ApiVersion int `yaml:"apiVersion"`
+	ApiVersion string `yaml:"apiVersion"`
 	Kind       string
 	Type       string
 	Data       SecretData
@@ -29,7 +29,7 @@ func NewSecret(name string, Type string, dockerconfigjson string) *Secret {
 	meta := SecretMetadata{Name: name}
 	data := SecretData{Dockerconfigjson: dockerconfigjson}
 	s := Secret{
-		ApiVersion: 1,
+		ApiVersion: "v1",
 		Kind:       "Secret",
 		Type:       Type,
 		Data:       data,
