@@ -57,7 +57,7 @@ func addVaultFlags(set *flag.FlagSet) {
 	set.String(
 		"vault-token",
 		"",
-		"Hashicorp Vault Access Token. Can be overridden by VAULT_URL environment variable (RECOMMENDED)",
+		"Hashicorp Vault Access Token. Can be overridden by VAULT_TOKEN environment variable (RECOMMENDED)",
 	)
 }
 
@@ -90,6 +90,7 @@ func main() {
 	generateConfigCommand := flag.NewFlagSet("generate-svc-config", flag.ExitOnError)
 	generateConfigService := generateConfigCommand.
 		String("service", "", "Service name")
+	generateConfigCommand.Bool("add-docker-image-tag", true, "Add information about service's docker tag to generated configuration. Default: true")
 	generateConfigTag := generateConfigCommand.String("tag", "latest", "Service's docker image tag. Default: latest")
 	addVaultFlags(generateConfigCommand)
 
@@ -125,10 +126,14 @@ func main() {
 		}
 		u := generateConfigCommand.Lookup("vault-url").Value.String()
 		t := generateConfigCommand.Lookup("vault-token").Value.String()
+		addTag := generateConfigCommand.Lookup("add-docker-image-tag").Value.String()
 		creds := validateVaultFlags(&u, &t)
 		if creds == nil {
 			fmt.Println("Vault flags are invalid")
 			os.Exit(1)
+		}
+		if addTag == "false" {
+			generateConfigTag = nil
 		}
 		fmt.Println(generateSvcConfig(generateConfigService, generateConfigTag, creds))
 	}

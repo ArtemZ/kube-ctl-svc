@@ -2,6 +2,7 @@ package vault
 
 import (
 	"crypto/tls"
+	"errors"
 	"github.com/hashicorp/vault/api"
 	"net/http"
 	"time"
@@ -35,5 +36,8 @@ func ReadVaultSecret(client *api.Client, path string) (map[string]interface{}, e
 	if err != nil {
 		return map[string]interface{}{}, err
 	}
-	return data.Data["data"].(map[string]interface{}), nil
+	if data == nil {
+		return nil, errors.New("vault client returned empty response")
+	}
+	return data.Data, nil
 }
