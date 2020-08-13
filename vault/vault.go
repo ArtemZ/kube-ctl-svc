@@ -14,7 +14,8 @@ type VaultCredentials struct {
 }
 
 var tr = &http.Transport{
-	TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
+	ResponseHeaderTimeout: 10 * time.Second,
 }
 
 var httpClient = &http.Client{
