@@ -36,15 +36,28 @@ func generateRegistrySecretManifest(credentials *vault.VaultCredentials) {
 	if err != nil {
 		panic(err)
 	}
+	var registryUsername string
 	var registryPassword string
+	var registryAddr string
+
 	if p, ok := r["registry_password"].(string); ok {
 		registryPassword = p
 	} else {
 		panic("Registry password retrieved from Vault is not valid")
 	}
+	if p, ok := r["registry_username"].(string); ok {
+		registryUsername = p
+	} else {
+		registryUsername = "k8s-registry-token"
+	}
+	if p, ok := r["registry_addr"].(string); ok {
+		registryAddr = p
+	} else {
+		registryAddr = "registry.gitlab.com"
+	}
 	creds := docker.RegistryCredentials{
-		Addr:     "registry.gitlab.com",
-		Username: "k8s-registry-token",
+		Addr:     registryAddr,
+		Username: registryUsername,
 		Password: registryPassword,
 	}
 	m := secret.NewSecret(
