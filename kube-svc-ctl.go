@@ -5,7 +5,6 @@ import (
 	"kube-svc-ctl/k8s/secret"
 	"kube-svc-ctl/svc"
 	"kube-svc-ctl/vault"
-	"net"
 )
 import "flag"
 import "os"
@@ -16,17 +15,8 @@ func validateKubernetesResource(name *string, namespace *string, resourceType *s
 }
 func generateSvcConfig(name *string, tag *string, credentials *vault.VaultCredentials) string {
 	c := vault.NewVaultAuthenticatedClient(credentials)
-	var reties = 10
 	r, err := vault.ReadVaultSecret(c, "secret/data/service/"+*name)
-	for reties != 0 {
-		if test, ok := err.(net.Error); ok && test.Timeout() {
-			r, err = vault.ReadVaultSecret(c, "secret/data/service/"+*name)
-			reties = reties - 1
-		} else {
-			panic(err)
-		}
-	}
-	if reties == 0 && err != nil {
+	if err != nil {
 		panic(err)
 	}
 
