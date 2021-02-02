@@ -16,17 +16,17 @@ func validateKubernetesResource(name *string, namespace *string, resourceType *s
 }
 func generateSvcConfig(name *string, tag *string, credentials *vault.VaultCredentials) string {
 	c := vault.NewVaultAuthenticatedClient(credentials)
-	var reties = 10
+	var retries = 10
 	r, err := vault.ReadVaultSecret(c, "secret/data/service/"+*name)
-	for reties != 0 {
+	for retries != 0 && err != nil {
 		if test, ok := err.(net.Error); ok && test.Timeout() {
 			r, err = vault.ReadVaultSecret(c, "secret/data/service/"+*name)
-			reties = reties - 1
+			retries = retries - 1
 		} else {
 			panic(err)
 		}
 	}
-	if reties == 0 && err != nil {
+	if retries == 0 && err != nil {
 		panic(err)
 	}
 
