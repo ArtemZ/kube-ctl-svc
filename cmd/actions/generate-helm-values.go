@@ -34,7 +34,6 @@ func GenerateHelmValues() error {
 		data = set.String(cf.Name, "map", "Target YAML formatting. Acceptable values: map, list. Default: map")
 		return &data
 	})
-
 	c := cmd.NewCommand("generate-helm-values")
 	action := func(c cmd.Command) {
 		var tokenPtr *string
@@ -50,7 +49,7 @@ func GenerateHelmValues() error {
 			tokenPtr = tokenValue.(*string)
 		}
 		if urlValue != nil {
-			urlPtr = tokenValue.(*string)
+			urlPtr = urlValue.(*string)
 		}
 		if serviceNameValue != nil {
 			serviceNamePtr = serviceNameValue.(*string)
@@ -70,8 +69,7 @@ func GenerateHelmValues() error {
 		if targetFormatValue != nil {
 			targetFormatPtr = targetFormatValue.(*string)
 		}
-
-		vaultCredentials, err := cmd.ValidateVaultFlags(tokenPtr, urlPtr)
+		vaultCredentials, err := cmd.ValidateVaultFlags(urlPtr, tokenPtr)
 		if err != nil {
 			panic(err)
 		}
@@ -86,7 +84,7 @@ func GenerateHelmValues() error {
 				panic(err)
 			}
 		}
-		if retries == 0 && err != nil {
+		if err != nil {
 			panic(err)
 		}
 

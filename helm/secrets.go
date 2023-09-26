@@ -2,6 +2,7 @@ package helm
 
 import (
 	"fmt"
+	"kube-svc-ctl/utils"
 	"strings"
 )
 
@@ -14,12 +15,13 @@ func (s *SecretTree) MakeMap(targetTree *string) map[string]interface{} {
 	var lastChild map[string]interface{}
 	for index := range splitTargetTree {
 		index = len(splitTargetTree) - 1 - index // reverse order
-
-		if index == len(splitTargetTree)-1 { // last element
+		if index == len(splitTargetTree)-1 {     // last element
 			lastChild = make(map[string]interface{})
 			lastChild[splitTargetTree[index]] = s.secrets
 		} else {
-			lastChild[splitTargetTree[index]] = lastChild
+			lastChildCopy := utils.CopyMap(lastChild)
+			lastChild = make(map[string]interface{})
+			lastChild[splitTargetTree[index]] = lastChildCopy
 		}
 	}
 	return lastChild
@@ -38,12 +40,13 @@ func (s *SecretTree) MakeList(targetTree *string) map[string]interface{} {
 	var lastChild map[string]interface{}
 	for index := range splitTargetTree {
 		index = len(splitTargetTree) - 1 - index // reverse order
-
-		if index == len(splitTargetTree)-1 { // last element
+		if index == len(splitTargetTree)-1 {     // last element
 			lastChild = make(map[string]interface{})
 			lastChild[splitTargetTree[index]] = secretList
 		} else {
-			lastChild[splitTargetTree[index]] = lastChild
+			lastChildCopy := utils.CopyMap(lastChild)
+			lastChild = make(map[string]interface{})
+			lastChild[splitTargetTree[index]] = lastChildCopy
 		}
 	}
 	return lastChild

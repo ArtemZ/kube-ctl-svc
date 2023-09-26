@@ -2,6 +2,7 @@ package helm
 
 import (
 	"gopkg.in/yaml.v2"
+	"kube-svc-ctl/utils"
 	"log"
 )
 
@@ -10,15 +11,13 @@ type Config struct {
 	secrets *SecretTree
 }
 
-var (
-	tree map[string]interface{}
-)
-
 func (s *Config) ToYaml(targetTree *string, format *string) string {
+	var tree map[string]interface{}
+	secrets := *s.secrets
 	if *format == "list" {
-		tree = s.secrets.MakeList(targetTree)
+		tree = secrets.MakeList(targetTree)
 	} else {
-		tree = s.secrets.MakeMap(targetTree)
+		tree = secrets.MakeMap(targetTree)
 	}
 
 	if s.tag != nil {
@@ -27,7 +26,6 @@ func (s *Config) ToYaml(targetTree *string, format *string) string {
 		t["tag"] = s.tag
 		tree["image"] = t
 	}
-
 	y, err := yaml.Marshal(tree)
 	if err != nil {
 		log.Fatalf("Yaml Marshalling error: %v", err)
@@ -35,16 +33,11 @@ func (s *Config) ToYaml(targetTree *string, format *string) string {
 	return string(y)
 }
 
-func mapIndexExists(m *map[string]interface{}, i string) bool {
-	_, exists := (*m)[i]
-	return exists
-}
-
 func NewHelmConfig(dockerImageTag *string, secrets *map[string]interface{}) Config {
 	var s map[string]interface{}
 	// check that we are working with a newer Vault version
 	// retrieve values from "data" submap in this case
-	if mapIndexExists(secrets, "data") && mapIndexExists(secrets, "metadata") {
+	if utils.MapIndexExists(secrets, "data") && utils.MapIndexExists(secrets, "metadata") {
 		s = (*secrets)["data"].(map[string]interface{})
 	} else { // use returned values directly otherwise
 		s = *secrets
