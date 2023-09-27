@@ -1,4 +1,4 @@
-package svc
+package helm
 
 import "testing"
 
@@ -8,10 +8,10 @@ func TestHelmConfig_ToYaml(t *testing.T) {
 	secrets["secret1"] = 1
 	secrets["secret2"] = "b"
 	tree := "some.weird.tree"
+	targetFormat := "map"
+	c := NewHelmConfig(&dockerTag, &secrets)
 
-	c := NewHelmConfig(&dockerTag, &secrets, &tree)
-
-	got := c.ToYaml()
+	got := c.ToYaml(&tree, &targetFormat)
 	want := `image:
   tag: latest
 some:

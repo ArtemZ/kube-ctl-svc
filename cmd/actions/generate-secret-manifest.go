@@ -25,7 +25,7 @@ func GenerateSecretManifest() error {
 		if urlValue != nil {
 			urlPtr = urlValue.(*string)
 		}
-		vaultCredentials, err := cmd.ValidateVaultFlags(tokenPtr, urlPtr)
+		vaultCredentials, err := cmd.ValidateVaultFlags(urlPtr, tokenPtr)
 		if err != nil {
 			panic(err)
 		}

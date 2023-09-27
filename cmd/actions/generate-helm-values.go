@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"kube-svc-ctl/cmd"
-	"kube-svc-ctl/svc"
+	"kube-svc-ctl/helm"
 	"kube-svc-ctl/vault"
 	"net"
 	"os"
@@ -29,6 +29,11 @@ func GenerateHelmValues() error {
 		return &data
 	})
 
+	targetYamlFormat := cmd.NewFlag("target-yaml-format", func(set *flag.FlagSet, cf *cmd.CommandFlag) *interface{} {
+		var data interface{}
+		data = set.String(cf.Name, "map", "Target YAML formatting. Acceptable values: map, list. Default: map")
+		return &data
+	})
 	c := cmd.NewCommand("generate-helm-values")
 	action := func(c cmd.Command) {
 		var tokenPtr *string
@@ -44,7 +49,7 @@ func GenerateHelmValues() error {
 			tokenPtr = tokenValue.(*string)
 		}
 		if urlValue != nil {
-			urlPtr = tokenValue.(*string)
+			urlPtr = urlValue.(*string)
 		}
 		if serviceNameValue != nil {
 			serviceNamePtr = serviceNameValue.(*string)
@@ -58,7 +63,13 @@ func GenerateHelmValues() error {
 		if targetTreeValue != nil {
 			targetTreePtr = targetTreeValue.(*string)
 		}
-		vaultCredentials, err := cmd.ValidateVaultFlags(tokenPtr, urlPtr)
+
+		targetFormatValue := *c.GetFlag("target-yaml-format").GetValuePtr()
+		var targetFormatPtr *string
+		if targetFormatValue != nil {
+			targetFormatPtr = targetFormatValue.(*string)
+		}
+		vaultCredentials, err := cmd.ValidateVaultFlags(urlPtr, tokenPtr)
 		if err != nil {
 			panic(err)
 		}
@@ -73,18 +84,19 @@ func GenerateHelmValues() error {
 				panic(err)
 			}
 		}
-		if retries == 0 && err != nil {
+		if err != nil {
 			panic(err)
 		}
 
-		s := svc.NewHelmConfig(tagPtr, &r, targetTreePtr)
-		fmt.Println(s.ToYaml())
+		s := helm.NewHelmConfig(tagPtr, &r)
+		fmt.Println(s.ToYaml(targetTreePtr, targetFormatPtr))
 	}
 	c.AddAction(cmd.CommandAction(action))
 	c.AddFlag(cmd.ServiceNameFlag())
 	c.AddFlag(addDockerImage)
 	c.AddFlag(dockerImageTag)
 	c.AddFlag(targetYamlTree)
+	c.AddFlag(targetYamlFormat)
 	c.AddFlag(cmd.VaultUrlFlag())
 	c.AddFlag(cmd.VaultTokenFlag())
 

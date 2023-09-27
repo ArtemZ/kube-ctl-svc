@@ -11,7 +11,7 @@ func ValidateVaultFlags(url *string, token *string) (*vault.VaultCredentials, er
 	urlEnv, vaultUrlOk := os.LookupEnv("VAULT_URL")
 	tokenEnv, vaultTokenOk := os.LookupEnv("VAULT_TOKEN")
 	if (*url == "" || *token == "") && (!vaultUrlOk || !vaultTokenOk) {
-		return nil, errors.New("No vault token and/or url supplied ")
+		return nil, errors.New("No vault token and/or url supplied 	")
 	}
 	if !vaultUrlOk || !vaultTokenOk {
 		creds := vault.VaultCredentials{
